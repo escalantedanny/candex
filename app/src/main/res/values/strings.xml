@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">Can desk</string>
+    <string name="app_name">Can Dex</string>
+    <string name="female">Hembra</string>
+    <string name="weight">Peso</string>
+    <string name="height">Altura</string>
+    <string name="group">Grupo</string>
+    <string name="male">Macho</string>
+    <string name="erro_showing_dog_not_found">Lista de animales deshabilitada</string>
+    <string name="status_dog_not_found">Estatus desconocido</string>
+    <string name="dog_index_format">#%d</string>
+    <string name="dog_life_expectancy_format">%s años</string>
 </resources>
