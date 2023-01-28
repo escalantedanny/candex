@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.escalantedanny.candesk.databinding.DogListItemBinding
 import com.escalantedanny.candesk.models.DogModel
 
@@ -38,10 +39,10 @@ class DogAdapter : ListAdapter<DogModel, DogAdapter.DogViewHolder>(DiffCallBack)
 
     inner class DogViewHolder(private val binding: DogListItemBinding): RecyclerView.ViewHolder(binding.root){
         fun bin( dog : DogModel) {
-            binding.dogName.text = dog.nameEs
-            binding.dogName.setOnClickListener {
+            binding.dogListItemLayout.setOnClickListener {
                 onItemClickListener?.invoke(dog)
             }
+            binding.dogImage.load(dog.imageURL)
         }
     }
 

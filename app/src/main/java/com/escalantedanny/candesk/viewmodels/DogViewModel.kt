@@ -12,11 +12,11 @@ import kotlinx.coroutines.launch
 class DogViewModel : ViewModel() {
 
     private val _dogList = MutableLiveData<List<DogModel>>()
-    val dogList: LiveData<List<DogModel> >
+    val dogList: LiveData<List<DogModel>>
         get() = _dogList
 
-    private val _status = MutableLiveData<ApiResponseStatus>()
-    val status: LiveData<ApiResponseStatus>
+    private val _status = MutableLiveData<ApiResponseStatus<List<DogModel>>>()
+    val status: LiveData<ApiResponseStatus<List<DogModel>>>
         get() = _status
 
     private val dogRepository = DogRepository()
@@ -32,9 +32,9 @@ class DogViewModel : ViewModel() {
         }
     }
 
-    private fun handleResponseStatus(apiResponseStatus: ApiResponseStatus){
-        if (apiResponseStatus is ApiResponseStatus.Success){
-            _dogList.value = apiResponseStatus.dogList
+    private fun handleResponseStatus(apiResponseStatus: ApiResponseStatus<List<DogModel>>) {
+        if (apiResponseStatus is ApiResponseStatus.Success) {
+            _dogList.value = apiResponseStatus.data
         }
         _status.value = apiResponseStatus
     }

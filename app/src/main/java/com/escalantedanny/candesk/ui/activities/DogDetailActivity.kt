@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import coil.load
 import com.bumptech.glide.Glide
 import com.escalantedanny.candesk.R
 import com.escalantedanny.candesk.databinding.ActivityDogDetailBinding
@@ -26,8 +27,7 @@ class DogDetailActivity : AppCompatActivity() {
             finish()
             return
         }
-
-        Glide.with(this).load(dog.imageURL).into(binding.dogImage)
+        binding.dogImage.load(dog.imageURL)
         binding.dogIndex.text = getString(R.string.dog_index_format, dog.index)
         binding.lifeExpectancy.text = getString(R.string.dog_life_expectancy_format, dog.lifeExpectancy)
         binding.dog = dog

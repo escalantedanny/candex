@@ -11,8 +11,8 @@ enum class ApiResponseStatus {
 }*/
 
 
-sealed class ApiResponseStatus() {
-    class Success(val dogList: List<DogModel>) : ApiResponseStatus()
-    class Loading() : ApiResponseStatus()
-    class Error(val message: String) : ApiResponseStatus()
+sealed class ApiResponseStatus<T> {
+    class Success<T>(val data: T) : ApiResponseStatus<T>()
+    class Loading<T> : ApiResponseStatus<T>()
+    class Error<T>(val messageId: Int) : ApiResponseStatus<T>()
 }
