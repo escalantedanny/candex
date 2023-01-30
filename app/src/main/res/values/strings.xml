@@ -11,4 +11,24 @@
     <string name="status_dog_not_found">Estatus desconocido</string>
     <string name="dog_index_format">#%d</string>
     <string name="dog_life_expectancy_format">%s años</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Contraseña</string>
+    <string name="action_sign_in">Inicio</string>
+    <string name="action_sign_up">Registro</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Bienvenido !"</string>
+    <string name="invalid_username">Usuario o correo invalido</string>
+    <string name="invalid_password">contraseña debe ser mayor a 5 caracteres</string>
+    <string name="login_failed">"Login Fallo"</string>
+    <string name="email">Correo</string>
+    <string name="password">Contraseña</string>
+    <string name="password_confirm">Confirmar</string>
+    <string name="forgotPassword">Olvidaste tu contraseña?</string>
+    <string name="firstName">Nombre</string>
+    <string name="lastName">Apellido</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="createAct">Crear cuenta</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

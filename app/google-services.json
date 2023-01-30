@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "99333247677",
+    "project_id": "dogs-dex",
+    "storage_bucket": "dogs-dex.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99333247677:android:82105495d75c450bcd9dd4",
+        "android_client_info": {
+          "package_name": "com.escalantedanny.candesk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "99333247677-gl3h3v5gjflmsfhmi3gpu3218msoktf6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_IHEnxr0CbjPWO1MIU_lOd3N_tj4ilBo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "99333247677-gl3h3v5gjflmsfhmi3gpu3218msoktf6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

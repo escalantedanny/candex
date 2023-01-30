@@ -6,7 +6,7 @@
 
         <variable
             name="dog"
-            type="com.escalantedanny.candesk.models.DogModel" />
+            type="com.escalantedanny.candesk.dogs.models.DogModel" />
     </data>
 
     <FrameLayout
