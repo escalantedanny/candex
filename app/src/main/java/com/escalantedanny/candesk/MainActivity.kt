@@ -1,14 +1,17 @@
 package com.escalantedanny.candesk
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.escalantedanny.candesk.auth.activities.LoginActivity
-import com.escalantedanny.candesk.databinding.ActivityLoginBinding
 import com.escalantedanny.candesk.databinding.ActivityMainBinding
 import com.escalantedanny.candesk.dogs.activities.DogListActivity
-import com.escalantedanny.candesk.models.User
+import com.escalantedanny.candesk.auth.models.User
+import com.escalantedanny.candesk.responses.ApiServiceInterceptor
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GetTokenResult
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +27,16 @@ class MainActivity : AppCompatActivity() {
         if (user == null) {
             openLoginActivity()
             return
+        }else {
+            auth.getAccessToken(true)
+                .addOnCompleteListener(OnCompleteListener<GetTokenResult?> { task ->
+                    if (task.isSuccessful) {
+                        val idToken: String? = task.result.token
+                        ApiServiceInterceptor.setSessionToken(sessionToken = idToken!!)
+                    } else {
+                        task.exception
+                    }
+                })
         }
 
         binding.tlMain.text = getString(R.string.saludo_main, user.email)
@@ -39,7 +52,6 @@ class MainActivity : AppCompatActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
         }
-
     }
 
     private fun openListAnimalsActivity() {

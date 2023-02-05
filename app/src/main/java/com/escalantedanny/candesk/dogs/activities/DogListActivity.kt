@@ -3,6 +3,7 @@ package com.escalantedanny.candesk.dogs.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -32,6 +33,12 @@ class DogListActivity : AppCompatActivity() {
             intent.putExtra(DOG_KEY, it)
             startActivity(intent)
         }
+
+        adapter.setOnLongItemClickListener {
+            dogListViewModel.addDogToUser(it.id)
+        }
+
+
         recycler.adapter = adapter
         dogListViewModel.dogList.observe(this){
             adapter.submitList(it)

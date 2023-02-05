@@ -1,5 +1,6 @@
-package com.escalantedanny.candesk.models
+package com.escalantedanny.candesk.responses
 
+import com.escalantedanny.candesk.dogs.models.DogModel
 import com.google.gson.annotations.SerializedName
 
 data class ResponseDogsModel (

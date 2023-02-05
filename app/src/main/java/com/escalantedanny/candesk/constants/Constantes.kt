@@ -6,4 +6,5 @@ object Constants {
     const val BASE_URL = "https://todogs.herokuapp.com/api/v1/"
     const val GET_ALL_DOGS = "dogs"
     const val SPAN_COUNT = 3
+    const val ADD_DOGS_TO_USER = "add_dog_to_user"
 }

@@ -1,15 +1,11 @@
 package com.escalantedanny.candesk.dogs.repositories
 
-import com.escalantedanny.candesk.R
+import android.util.Log
+import com.escalantedanny.candesk.api.DogsApi.retrofitService
 import com.escalantedanny.candesk.dogs.api.ApiResponseStatus
-import com.escalantedanny.candesk.dogs.api.DogsApi
-import com.escalantedanny.candesk.dogs.api.DogsApi.retrofitService
 import com.escalantedanny.candesk.dogs.api.makeNetworkCall
 import com.escalantedanny.candesk.dogs.models.DogModel
-import com.escalantedanny.candesk.dogs.models.ResponseDogsModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.net.UnknownHostException
+import com.escalantedanny.candesk.dogs.models.AddDogToUserModel
 
 class DogRepository {
 
@@ -19,5 +15,16 @@ class DogRepository {
             dogResponseList.data.dogs
         }
     }
+
+    suspend fun addDogToUser(dogId:Long): ApiResponseStatus<Any> =
+        makeNetworkCall {
+            val addDogToUserDTO = AddDogToUserModel(dogId)
+            val defaultResponse =
+                retrofitService.addDogTOUser(addDogToUserDTO)
+
+            if (!defaultResponse.isSuccess) {
+                throw Exception(defaultResponse.message)
+            }
+        }
 
 }

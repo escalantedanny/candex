@@ -14,15 +14,10 @@ import com.escalantedanny.candesk.auth.fragments.LoginFragment
 import com.escalantedanny.candesk.auth.fragments.LoginFragmentDirections
 import com.escalantedanny.candesk.auth.fragments.SignUpFragment
 import com.escalantedanny.candesk.databinding.ActivityLoginBinding
-import com.escalantedanny.candesk.dogs.activities.DogListActivity
-import com.escalantedanny.candesk.models.User
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
+import com.escalantedanny.candesk.auth.models.User
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GetTokenResult
-import kotlinx.coroutines.awaitAll
 
 class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, SignUpFragment.SingUpsFragmentActions {
 

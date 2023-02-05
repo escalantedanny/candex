@@ -1,6 +1,7 @@
 package com.escalantedanny.candesk.dogs.api
 
 import com.escalantedanny.candesk.R
+import com.escalantedanny.candesk.api.DogsApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.UnknownHostException

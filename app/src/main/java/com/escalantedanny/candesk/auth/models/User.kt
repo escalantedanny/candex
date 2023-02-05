@@ -1,4 +1,4 @@
-package com.escalantedanny.candesk.models
+package com.escalantedanny.candesk.auth.models
 
 import android.app.Activity
 import android.content.Context
@@ -42,7 +42,7 @@ class User(val id: String, val email: String?, val authenticationToken: String) 
             activity.getSharedPreferences(
                 AUTH_PREF, Context.MODE_PRIVATE
             ).also {
-                it.edit().clear().clear()
+                it.edit().clear().apply()
             }
         }
 
