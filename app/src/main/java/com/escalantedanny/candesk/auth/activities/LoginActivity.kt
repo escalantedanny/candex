@@ -1,33 +1,40 @@
 package com.escalantedanny.candesk.auth.activities
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.navigation.findNavController
+import com.escalantedanny.candesk.MainActivity
 import com.escalantedanny.candesk.R
 import com.escalantedanny.candesk.auth.fragments.LoginFragment
 import com.escalantedanny.candesk.auth.fragments.LoginFragmentDirections
 import com.escalantedanny.candesk.auth.fragments.SignUpFragment
 import com.escalantedanny.candesk.databinding.ActivityLoginBinding
 import com.escalantedanny.candesk.dogs.activities.DogListActivity
+import com.escalantedanny.candesk.models.User
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.GetTokenResult
+import kotlinx.coroutines.awaitAll
 
 class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, SignUpFragment.SingUpsFragmentActions {
 
-    private lateinit var databaseReference: DatabaseReference
-    private lateinit var database: FirebaseDatabase
     private lateinit var auth: FirebaseAuth
+    private lateinit var  progressBar: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        progressBar = ProgressDialog(this)
+        auth = FirebaseAuth.getInstance()
     }
 
     @SuppressLint("ResourceType")
@@ -37,39 +44,81 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
             .navigate(LoginFragmentDirections.actionLoginFragmentToSignUpFragment())
     }
 
-    override fun onSignUpFieldsValidated(
-        email: String,
-        password: String,
-        passwordConfirmation: String
-    ) {
+    override fun onLoginButtonClick(email: String, password: String) {
 
-        database = FirebaseDatabase.getInstance()
-        auth = FirebaseAuth.getInstance()
-        databaseReference = database.reference.child("Users")
+        progressBar.setMessage("Ingresando usuario...")
+        progressBar.show()
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                progressBar.dismiss()
+                val firebaseUser = auth.currentUser
 
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this){
+                val user = User(
+                    id = firebaseUser!!.uid,
+                    email = firebaseUser.email,
+                    authenticationToken = firebaseUser.email+""+firebaseUser.uid)
 
-                val user: FirebaseUser = auth.currentUser!!
-                verifyEmail(user);
-                val currentUserDb = databaseReference.child(user.uid)
-                currentUserDb.child("firstName").setValue("firstName")
-                currentUserDb.child("lastName").setValue("lastName")
+                User.setLoggedInUser(this, user)
+
                 updateUserInfoAndGoHome()
-
             }.addOnFailureListener{
                 Toast.makeText(this, "Error en la autenticación.",
                     Toast.LENGTH_SHORT).show()
             }
     }
 
-    private fun updateUserInfoAndGoHome() {
-        val intent = Intent(this, DogListActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
+    override fun onSignUpFieldsValidated(
+        email: String,
+        password: String,
+        passwordConfirmation: String,
+        firstName: String,
+        secondName: String
+    ) {
+        FirebaseApp.initializeApp(this)
+
+        val userFirebase = auth.currentUser
+        progressBar.setMessage("Creando usuario...")
+        progressBar.show()
+
+        Log.wtf("USER", userFirebase?.uid.toString())
+
+        if (userFirebase != null){
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this)  {
+
+                    val user: FirebaseUser? = userFirebase
+
+                    if (user != null) {
+                        verifyEmail(user)
+                    };
+
+
+
+                    //val usuario = User(id = user!!.uid, email = user.email  )
+
+                    //User.setLoggedInUser(this, )
+                    updateUserInfoAndGoHome()
+
+                }.addOnFailureListener{
+                    Toast.makeText(this, "Error en la autenticación.",
+                        Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(this, "null.",
+                Toast.LENGTH_SHORT).show()
+        }
+
     }
 
-    fun verifyEmail(user: FirebaseUser) {
+    private fun updateUserInfoAndGoHome() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        progressBar.hide()
+        finish()
+    }
+
+    private fun verifyEmail(user: FirebaseUser) {
         user.sendEmailVerification()
             .addOnCompleteListener(this) {
                     task ->

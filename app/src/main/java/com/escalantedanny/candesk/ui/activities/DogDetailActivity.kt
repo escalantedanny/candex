@@ -2,13 +2,11 @@ package com.escalantedanny.candesk.ui.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import coil.load
-import com.bumptech.glide.Glide
 import com.escalantedanny.candesk.R
 import com.escalantedanny.candesk.databinding.ActivityDogDetailBinding
-import com.escalantedanny.candesk.models.DogModel
+import com.escalantedanny.candesk.dogs.models.DogModel
 
 class DogDetailActivity : AppCompatActivity() {
 

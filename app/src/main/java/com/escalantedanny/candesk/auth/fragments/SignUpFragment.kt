@@ -15,7 +15,13 @@ class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
 
     interface SingUpsFragmentActions {
-        fun onSignUpFieldsValidated(email: String, password: String, passwordConfirmation: String)
+        fun onSignUpFieldsValidated(
+            email: String,
+            password: String,
+            passwordConfirmation: String,
+            firstName: String,
+            secondName: String
+        )
     }
 
     private lateinit var signUpFragmentActions: SingUpsFragmentActions
@@ -41,7 +47,6 @@ class SignUpFragment : Fragment() {
     private fun setupSignUpButton() {
         binding.signUpButton.setOnClickListener {
             ValidateFields()
-
         }
     }
 
@@ -52,6 +57,8 @@ class SignUpFragment : Fragment() {
         val email = binding.emailEdit.text.toString()
         val password = binding.passwordEdit.text.toString()
         val confirm = binding.confirmPasswordEdit.text.toString()
+        val firstName = binding.firstNameEdit.text.toString()
+        val secondName = binding.secondNameEdit.text.toString()
 
         if (!isValidEmail(email)) {
             binding.emailInput.error = "Email no es valido"
@@ -75,7 +82,12 @@ class SignUpFragment : Fragment() {
         }
 
         // llamar singUp
-        signUpFragmentActions.onSignUpFieldsValidated(email, password, confirm)
+        signUpFragmentActions.onSignUpFieldsValidated(
+            email,
+            password,
+            confirm,
+            firstName,
+            secondName)
     }
 
 }

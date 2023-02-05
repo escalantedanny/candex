@@ -5,7 +5,7 @@ plugins {
     // para pasar datos de un activity a otro activity
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs'   // pasar argumentos de un fragmen a otro
-    id 'com.google.gms.google-services'
+    id 'com.google.gms.google-services'  // conexion a firebase
 }
 
 android {
@@ -46,13 +46,13 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.0'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.annotation:annotation:1.5.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
 
     // navegar entre fragments
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
@@ -65,19 +65,18 @@ dependencies {
     // consumir datos desde internet y parcearlos
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.9.1'
 
     // mostrar imagenes desde internet
     implementation "com.github.bumptech.glide:glide:4.13.2"
     implementation "io.coil-kt:coil:2.2.2"
 
     // login con firebase
+    // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:31.2.0')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth:21.1.0'
-    implementation 'com.google.firebase:firebase-database:20.1.0'
-
-    //implementation 'com.google.firebase:firebase-admin:9.1.1'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.4.2'
 
 }
 
