@@ -2,6 +2,7 @@ package com.escalantedanny.candesk
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.escalantedanny.candesk.auth.activities.LoginActivity
 import com.escalantedanny.candesk.databinding.ActivityMainBinding
@@ -22,32 +23,45 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        auth = FirebaseAuth.getInstance()
         val user = User.getLoggedInUser(this)
-        if (user == null) {
-            openLoginActivity()
-            return
-        }else {
-            auth.getAccessToken(true)
-                .addOnCompleteListener(OnCompleteListener<GetTokenResult?> { task ->
-                    if (task.isSuccessful) {
-                        val idToken: String? = task.result.token
-                        ApiServiceInterceptor.setSessionToken(sessionToken = idToken!!)
-                    } else {
-                        task.exception
-                    }
-                })
+
+        Log.wtf("USER_SHAREDPREFERENCE", user.toString())
+
+        if (BuildConfig.ACTIVE_AUTH_FIREBASE) {
+            if (user == null) {
+                openLoginActivity()
+                return
+            } else {
+                auth = FirebaseAuth.getInstance()
+                auth.getAccessToken(true)
+                    .addOnCompleteListener(OnCompleteListener<GetTokenResult?> { task ->
+                        if (task.isSuccessful) {
+                            val idToken: String? = task.result.token
+                            ApiServiceInterceptor.setSessionToken(sessionToken = idToken!!)
+                        } else {
+                            task.exception
+                        }
+                    })
+            }
+        } else {
+            if (user != null) {
+                ApiServiceInterceptor.setSessionToken(sessionToken = user.authenticationToken)
+            }
         }
 
-        binding.tlMain.text = getString(R.string.saludo_main, user.email)
+        binding.tlMain.text = getString(R.string.saludo_main, "Hi")
 
         binding.ListDogs.setOnClickListener {
             openListAnimalsActivity()
         }
 
         binding.logout.setOnClickListener {
-            User.logout(this)
-            auth.signOut()
+
+            if (BuildConfig.ACTIVE_AUTH_FIREBASE) {
+                auth.signOut()
+            } else {
+                User.logout(this)
+            }
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)

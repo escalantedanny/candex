@@ -6,8 +6,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.navigation.findNavController
+import com.escalantedanny.candesk.BuildConfig
 import com.escalantedanny.candesk.MainActivity
 import com.escalantedanny.candesk.R
 import com.escalantedanny.candesk.auth.fragments.LoginFragment
@@ -15,14 +18,22 @@ import com.escalantedanny.candesk.auth.fragments.LoginFragmentDirections
 import com.escalantedanny.candesk.auth.fragments.SignUpFragment
 import com.escalantedanny.candesk.databinding.ActivityLoginBinding
 import com.escalantedanny.candesk.auth.models.User
+import com.escalantedanny.candesk.auth.models.UserResponse
+import com.escalantedanny.candesk.auth.viewmodels.AuthViewModels
+import com.escalantedanny.candesk.dogs.api.ApiResponseStatus
+import com.escalantedanny.candesk.utils.showErrorDialog
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
-class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, SignUpFragment.SingUpsFragmentActions {
+class LoginActivity : AppCompatActivity(),
+    LoginFragment.LoginFragmentActions,
+    SignUpFragment.SingUpFragmentActions {
+
+    private val viewModel: AuthViewModels by viewModels()
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var  progressBar: ProgressDialog
+    private lateinit var progressBar: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +41,29 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
         setContentView(binding.root)
         progressBar = ProgressDialog(this)
         auth = FirebaseAuth.getInstance()
+
+        viewModel.status.observe(this) {
+            when (it) {
+                is ApiResponseStatus.Error -> {
+                    binding.loginProgress.visibility = View.GONE
+                    Log.wtf("REGISTER", "ApiResponseStatus.Error")
+                    showErrorDialog(it.messageId, this)
+                }
+                is ApiResponseStatus.Loading -> binding.loginProgress.visibility = View.VISIBLE
+                is ApiResponseStatus.Success -> {
+                    binding.loginProgress.visibility = View.GONE
+                }
+            }
+        }
+
+        viewModel.user.observe(this) { user ->
+            if (user != null) {
+                Log.wtf("REGISTER", "updateUserInfoAndGoHome" + user.user.authenticationToken)
+                var user = User(user.user.id, user.user.email, user.user.authenticationToken)
+                User.setLoggedInUser(this, user)
+                updateUserInfoAndGoHome()
+            }
+        }
     }
 
     @SuppressLint("ResourceType")
@@ -41,25 +75,31 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
 
     override fun onLoginButtonClick(email: String, password: String) {
 
-        progressBar.setMessage("Ingresando usuario...")
-        progressBar.show()
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
-                progressBar.dismiss()
-                val firebaseUser = auth.currentUser
+        if (BuildConfig.ACTIVE_AUTH_FIREBASE) {
+            progressBar.setMessage("Ingresando usuario...")
+            progressBar.show()
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener {
+                    progressBar.dismiss()
+                    val firebaseUser = auth.currentUser
 
-                val user = User(
-                    id = firebaseUser!!.uid,
-                    email = firebaseUser.email,
-                    authenticationToken = firebaseUser.email+""+firebaseUser.uid)
+                    val user = User(
+                        //id = firebaseUser!!.uid,
+                        id = 0L,
+                        email = firebaseUser?.email,
+                        authenticationToken = firebaseUser?.email + "" + firebaseUser?.uid
+                    )
 
-                User.setLoggedInUser(this, user)
+                    User.setLoggedInUser(this, user)
 
-                updateUserInfoAndGoHome()
-            }.addOnFailureListener{
-                Toast.makeText(this, "Error en la autenticación.",
-                    Toast.LENGTH_SHORT).show()
-            }
+                    updateUserInfoAndGoHome()
+                }.addOnFailureListener {
+                    progressBar.dismiss()
+                    showErrorDialog(R.string.error_authentication, this)
+                }
+        } else {
+            viewModel.signIn(email, password)
+        }
     }
 
     override fun onSignUpFieldsValidated(
@@ -69,39 +109,41 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
         firstName: String,
         secondName: String
     ) {
-        FirebaseApp.initializeApp(this)
-
-        val userFirebase = auth.currentUser
-        progressBar.setMessage("Creando usuario...")
-        progressBar.show()
-
-        Log.wtf("USER", userFirebase?.uid.toString())
-
-        if (userFirebase != null){
-
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this)  {
-
-                    val user: FirebaseUser? = userFirebase
-
-                    if (user != null) {
-                        verifyEmail(user)
-                    };
 
 
+        if (BuildConfig.ACTIVE_AUTH_FIREBASE) {
 
-                    //val usuario = User(id = user!!.uid, email = user.email  )
+            FirebaseApp.initializeApp(this)
+            val userFirebase = auth.currentUser
+            progressBar.setMessage("Creando usuario...")
+            progressBar.show()
 
-                    //User.setLoggedInUser(this, )
-                    updateUserInfoAndGoHome()
+            Log.wtf("USER", userFirebase?.uid.toString())
+            if (userFirebase != null) {
 
-                }.addOnFailureListener{
-                    Toast.makeText(this, "Error en la autenticación.",
-                        Toast.LENGTH_SHORT).show()
-                }
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this) {
+
+                        val user: FirebaseUser? = userFirebase
+
+                        if (user != null)
+                            verifyEmail(user)
+
+                        updateUserInfoAndGoHome()
+
+                    }.addOnFailureListener {
+                        Toast.makeText(
+                            this, "Error en la autenticación.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            } else {
+                progressBar.dismiss()
+                showErrorDialog(R.string.error_desconocido, this)
+            }
         } else {
-            Toast.makeText(this, "null.",
-                Toast.LENGTH_SHORT).show()
+            Log.wtf("REGISTER", "viewModel.signUp")
+            viewModel.signUp(email, password, passwordConfirmation)
         }
 
     }
@@ -115,17 +157,22 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
 
     private fun verifyEmail(user: FirebaseUser) {
         user.sendEmailVerification()
-            .addOnCompleteListener(this) {
-                    task ->
+            .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this,
+                    Toast.makeText(
+                        this,
                         "Email " + user.getEmail(),
-                        Toast.LENGTH_SHORT).show()
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
-                    Toast.makeText(this,
+                    Toast.makeText(
+                        this,
                         "Error al verificar el correo ",
-                        Toast.LENGTH_SHORT).show()
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
     }
+
+
 }

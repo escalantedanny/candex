@@ -7,14 +7,14 @@ import com.escalantedanny.candesk.utils.Constants.AUTH_ID
 import com.escalantedanny.candesk.utils.Constants.AUTH_PREF
 import com.escalantedanny.candesk.utils.Constants.AUTH_TOKEN
 
-class User(val id: String, val email: String?, val authenticationToken: String) {
+class User(val id: Long, val email: String?, val authenticationToken: String) {
 
     companion object {
 
         fun setLoggedInUser(activity: Activity, user: User) {
             activity.getSharedPreferences(AUTH_PREF, Context.MODE_PRIVATE).also {
                 it.edit()
-                    .putString(AUTH_ID, user.id)
+                    .putLong(AUTH_ID, user.id)
                     .putString(AUTH_EMAIL, user.email)
                     .putString(AUTH_TOKEN, user.authenticationToken)
                     .apply()
@@ -25,13 +25,13 @@ class User(val id: String, val email: String?, val authenticationToken: String) 
             val prefs =
                 activity.getSharedPreferences(AUTH_PREF, Context.MODE_PRIVATE) ?: return null
 
-            val userId = prefs.getString(AUTH_ID, "")
-            if (userId == ""){
+            val userId = prefs.getLong(AUTH_ID, 0)
+            if (userId == 0L){
                 return null
             }
 
             return User(
-                userId ?: "",
+                userId ,
                 prefs.getString(AUTH_EMAIL, "") ?: "",
                 prefs.getString(AUTH_TOKEN, "") ?: ""
             )

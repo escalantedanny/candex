@@ -17,7 +17,13 @@ suspend fun <T> makeNetworkCall(
         } catch (_: UnknownHostException) {
             ApiResponseStatus.Error(R.string.no_internet)
         } catch (e: Exception) {
-            ApiResponseStatus.Error(R.string.error_desconocido)
+            val errorMessage = when(e.message){
+                "sign_up_error" -> R.string.sign_up_error
+                "sign_in_error" -> R.string.sign_in_error
+                "user_already_exists" -> R.string.user_already_exists
+                else -> R.string.error_desconocido
+            }
+            ApiResponseStatus.Error(errorMessage)
         }
 
     }

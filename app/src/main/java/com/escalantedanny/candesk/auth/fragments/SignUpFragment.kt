@@ -14,7 +14,7 @@ class SignUpFragment : Fragment() {
 
     private lateinit var binding: FragmentSignUpBinding
 
-    interface SingUpsFragmentActions {
+    interface SingUpFragmentActions {
         fun onSignUpFieldsValidated(
             email: String,
             password: String,
@@ -24,12 +24,12 @@ class SignUpFragment : Fragment() {
         )
     }
 
-    private lateinit var signUpFragmentActions: SingUpsFragmentActions
+    private lateinit var signUpFragmentActions: SingUpFragmentActions
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         signUpFragmentActions = try {
-            context as SingUpsFragmentActions
+            context as SingUpFragmentActions
         } catch (e: java.lang.ClassCastException){
             throw java.lang.ClassCastException("$context debe ser implementado")
         }
