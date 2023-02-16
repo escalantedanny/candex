@@ -1,11 +1,15 @@
 package com.escalantedanny.candesk.dogs.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.escalantedanny.candesk.R
 import com.escalantedanny.candesk.databinding.DogListItemBinding
 import com.escalantedanny.candesk.dogs.models.DogModel
 
@@ -44,14 +48,35 @@ class DogAdapter : ListAdapter<DogModel, DogAdapter.DogViewHolder>(DiffCallBack)
 
     inner class DogViewHolder(private val binding: DogListItemBinding): RecyclerView.ViewHolder(binding.root){
         fun bin( dog : DogModel) {
-            binding.dogListItemLayout.setOnClickListener {
-                onItemClickListener?.invoke(dog)
+
+            if (!dog.inCollection){
+
+                binding.dogListItemLayout.background = ContextCompat.getDrawable(
+                    binding.dogImage.context,
+                    R.drawable.dog_list_item_background
+                )
+
+                binding.dogImage.visibility = View.VISIBLE
+                binding.dogImageNull.visibility = View.GONE
+
+                binding.dogListItemLayout.setOnClickListener {
+                    onItemClickListener?.invoke(dog)
+                }
+
+                binding.dogImage.load(dog.imageURL)
+            } else {
+                binding.dogImage.visibility = View.GONE
+                binding.dogImageNull.visibility = View.VISIBLE
+                binding.dogListItemLayout.background = ContextCompat.getDrawable(
+                    binding.dogImage.context,
+                    R.drawable.dog_list_item_null_backgroung
+                )
+                binding.dogListItemLayout.setOnLongClickListener() {
+                    onLongItemClickListener?.invoke(dog)
+                    true
+                }
             }
-            binding.dogListItemLayout.setOnLongClickListener() {
-                onLongItemClickListener?.invoke(dog)
-                true
-            }
-            binding.dogImage.load(dog.imageURL)
+
         }
     }
 

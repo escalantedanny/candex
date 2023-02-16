@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity(),
             when (it) {
                 is ApiResponseStatus.Error -> {
                     binding.loginProgress.visibility = View.GONE
-                    Log.wtf("REGISTER", "ApiResponseStatus.Error")
+                    Log.wtf("status", "ApiResponseStatus.Error")
                     showErrorDialog(it.messageId, this)
                 }
                 is ApiResponseStatus.Loading -> binding.loginProgress.visibility = View.VISIBLE

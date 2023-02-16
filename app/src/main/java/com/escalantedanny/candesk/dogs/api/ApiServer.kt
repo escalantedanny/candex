@@ -6,6 +6,7 @@ import com.escalantedanny.candesk.auth.models.SignUpResponse
 import com.escalantedanny.candesk.constants.Constants.ADD_DOGS_TO_USER
 import com.escalantedanny.candesk.constants.Constants.BASE_URL
 import com.escalantedanny.candesk.constants.Constants.GET_ALL_DOGS
+import com.escalantedanny.candesk.constants.Constants.GET_USER_DOGS
 import com.escalantedanny.candesk.constants.Constants.SIGN_IN_TO_USER
 import com.escalantedanny.candesk.constants.Constants.SIGN_UP_TO_USER
 import com.escalantedanny.candesk.dogs.models.AddDogToUserModel
@@ -44,6 +45,10 @@ interface ApiServer {
 
     @POST(SIGN_IN_TO_USER)
     suspend fun signIn(@Body dataSignUp: SignInModel): SignUpResponse
+
+    @Headers("${ApiServiceInterceptor.NEEDS_AUTH_HEADER_KEY}: true")
+    @GET(GET_USER_DOGS)
+    suspend fun getUserDogs(): ResponseDogsModel
 
 }
 

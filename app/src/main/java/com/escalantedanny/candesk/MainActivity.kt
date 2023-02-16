@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.escalantedanny.candesk.auth.activities.LoginActivity
+import com.escalantedanny.candesk.auth.models.User
 import com.escalantedanny.candesk.databinding.ActivityMainBinding
 import com.escalantedanny.candesk.dogs.activities.DogListActivity
-import com.escalantedanny.candesk.auth.models.User
 import com.escalantedanny.candesk.responses.ApiServiceInterceptor
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         val user = User.getLoggedInUser(this)
+
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(R.mipmap.ic_launcher)
 
         Log.wtf("USER_SHAREDPREFERENCE", user.toString())
 
@@ -44,12 +47,15 @@ class MainActivity : AppCompatActivity() {
                     })
             }
         } else {
-            if (user != null) {
+            if (user == null) {
+                openLoginActivity()
+                return
+            } else {
                 ApiServiceInterceptor.setSessionToken(sessionToken = user.authenticationToken)
             }
         }
 
-        binding.tlMain.text = getString(R.string.saludo_main, "Hi")
+        binding.tlMain.text = getString(R.string.saludo_main, "Hi ${user?.email}")
 
         binding.ListDogs.setOnClickListener {
             openListAnimalsActivity()
@@ -66,6 +72,10 @@ class MainActivity : AppCompatActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
         }
+    }
+
+    fun requestCameraPerimission(){
+
     }
 
     private fun openListAnimalsActivity() {

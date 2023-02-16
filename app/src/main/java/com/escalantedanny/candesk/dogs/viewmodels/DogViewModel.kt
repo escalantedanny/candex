@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.escalantedanny.candesk.dogs.api.ApiResponseStatus
+import com.escalantedanny.candesk.dogs.models.Dog
 import com.escalantedanny.candesk.dogs.models.DogModel
 import com.escalantedanny.candesk.dogs.repositories.DogRepository
 import kotlinx.coroutines.launch
@@ -23,20 +24,20 @@ class DogViewModel : ViewModel() {
     private val dogRepository = DogRepository()
 
     init {
-        downloadDogs()
+        getDogsCollections()
+    }
+
+    private fun getDogsCollections(){
+        viewModelScope.launch {
+            _status.value = ApiResponseStatus.Loading()
+            handleResponseStatus(dogRepository.getDogsCollections())
+        }
     }
 
     fun addDogToUser(dogId: Long) {
         viewModelScope.launch {
             _status.value = ApiResponseStatus.Loading()
             handleAddDogToUserResponseStatus(dogRepository.addDogToUser(dogId))
-        }
-    }
-
-    private fun downloadDogs() {
-        viewModelScope.launch {
-            _status.value = ApiResponseStatus.Loading()
-            handleResponseStatus(dogRepository.downloadDogs())
         }
     }
 
@@ -51,7 +52,7 @@ class DogViewModel : ViewModel() {
     private fun handleAddDogToUserResponseStatus(apiResponseStatus: ApiResponseStatus<Any>) {
 
         if (apiResponseStatus is ApiResponseStatus.Success) {
-            downloadDogs()
+            getDogsCollections()
         }
         _status.value = apiResponseStatus
     }
