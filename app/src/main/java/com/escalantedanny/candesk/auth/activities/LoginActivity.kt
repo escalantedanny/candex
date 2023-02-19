@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.escalantedanny.candesk.auth.activities
 
 import android.annotation.SuppressLint
@@ -18,7 +20,6 @@ import com.escalantedanny.candesk.auth.fragments.LoginFragmentDirections
 import com.escalantedanny.candesk.auth.fragments.SignUpFragment
 import com.escalantedanny.candesk.databinding.ActivityLoginBinding
 import com.escalantedanny.candesk.auth.models.User
-import com.escalantedanny.candesk.auth.models.UserResponse
 import com.escalantedanny.candesk.auth.viewmodels.AuthViewModels
 import com.escalantedanny.candesk.dogs.api.ApiResponseStatus
 import com.escalantedanny.candesk.utils.showErrorDialog
@@ -39,6 +40,7 @@ class LoginActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        @Suppress("DEPRECATION")
         progressBar = ProgressDialog(this)
         auth = FirebaseAuth.getInstance()
 
@@ -59,8 +61,8 @@ class LoginActivity : AppCompatActivity(),
         viewModel.user.observe(this) { user ->
             if (user != null) {
                 Log.wtf("REGISTER", "updateUserInfoAndGoHome" + user.user.authenticationToken)
-                var user = User(user.user.id, user.user.email, user.user.authenticationToken)
-                User.setLoggedInUser(this, user)
+                val usu = User(user.user.id, user.user.email, user.user.authenticationToken)
+                User.setLoggedInUser(this, usu)
                 updateUserInfoAndGoHome()
             }
         }
@@ -76,6 +78,7 @@ class LoginActivity : AppCompatActivity(),
     override fun onLoginButtonClick(email: String, password: String) {
 
         if (BuildConfig.ACTIVE_AUTH_FIREBASE) {
+            @Suppress("DEPRECATION")
             progressBar.setMessage("Ingresando usuario...")
             progressBar.show()
             auth.signInWithEmailAndPassword(email, password)

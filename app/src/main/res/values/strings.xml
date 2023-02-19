@@ -12,6 +12,7 @@
     <string name="dog_index_format">#%d</string>
     <string name="dog_life_expectancy_format">%s años</string>
     <string name="saludo_main">HOLA %s</string>
+    <string name="camara_quieta">No te muevas</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Contraseña</string>
@@ -40,4 +41,7 @@
     <string name="error_authentication">Error en la autenticacion</string>
     <string name="user_already_exists">user already exists</string>
     <string name="there_was_an_error">Habia un error</string>
+
+    <string name="accept_camera_title">Aceptar Camara</string>
+    <string name="camera_permission">Debes aceptar la camara para utilizar la funcionalidad de la aplicacion</string>
 </resources>

@@ -1,10 +1,9 @@
 package com.escalantedanny.candesk.responses
 
-import com.escalantedanny.candesk.dogs.models.Dog
 import com.escalantedanny.candesk.dogs.models.DogModel
 import com.google.gson.annotations.SerializedName
 
-data class ResponseDogsModel (
+data class ResponseDogsModel(
     val message: String,
 
     @SerializedName("is_success")
@@ -13,6 +12,6 @@ data class ResponseDogsModel (
     val data: Data
 )
 
-data class Data (
+data class Data(
     val dogs: List<DogModel>
 )

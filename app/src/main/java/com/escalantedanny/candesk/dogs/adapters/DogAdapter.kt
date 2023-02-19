@@ -1,6 +1,5 @@
 package com.escalantedanny.candesk.dogs.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.escalantedanny.candesk.R
 import com.escalantedanny.candesk.databinding.DogListItemBinding
+import com.escalantedanny.candesk.dogs.dto.DogDTOMapper
+import com.escalantedanny.candesk.dogs.models.Dog
 import com.escalantedanny.candesk.dogs.models.DogModel
 
 class DogAdapter : ListAdapter<DogModel, DogAdapter.DogViewHolder>(DiffCallBack) {
@@ -25,16 +26,10 @@ class DogAdapter : ListAdapter<DogModel, DogAdapter.DogViewHolder>(DiffCallBack)
         }
     }
 
-    private var onItemClickListener: ((DogModel) -> Unit)? = null
-    fun setOnItemClickListener(onItemClickListener: (DogModel) -> Unit) {
+    private var onItemClickListener: ((Dog) -> Unit)? = null
+    fun setOnItemClickListener(onItemClickListener: (Dog) -> Unit) {
         this.onItemClickListener = onItemClickListener
     }
-
-    private var onLongItemClickListener: ((DogModel) -> Unit)? = null
-    fun setOnLongItemClickListener(onLongItemClickListener: (DogModel) -> Unit) {
-        this.onLongItemClickListener = onLongItemClickListener
-    }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DogViewHolder {
         val binding = DogListItemBinding.inflate(LayoutInflater.from(parent.context))
@@ -49,7 +44,10 @@ class DogAdapter : ListAdapter<DogModel, DogAdapter.DogViewHolder>(DiffCallBack)
     inner class DogViewHolder(private val binding: DogListItemBinding): RecyclerView.ViewHolder(binding.root){
         fun bin( dog : DogModel) {
 
-            if (!dog.inCollection){
+            val dogDTOMapper = DogDTOMapper()
+            val dog2 = dogDTOMapper.fromDogDTOToDogDomain(dog)
+
+            if (!dog2.inCollection){
 
                 binding.dogListItemLayout.background = ContextCompat.getDrawable(
                     binding.dogImage.context,
@@ -60,10 +58,10 @@ class DogAdapter : ListAdapter<DogModel, DogAdapter.DogViewHolder>(DiffCallBack)
                 binding.dogImageNull.visibility = View.GONE
 
                 binding.dogListItemLayout.setOnClickListener {
-                    onItemClickListener?.invoke(dog)
+                    onItemClickListener?.invoke(dog2)
                 }
 
-                binding.dogImage.load(dog.imageURL)
+                binding.dogImage.load(dog2.imageURL)
             } else {
                 binding.dogImage.visibility = View.GONE
                 binding.dogImageNull.visibility = View.VISIBLE
@@ -72,7 +70,6 @@ class DogAdapter : ListAdapter<DogModel, DogAdapter.DogViewHolder>(DiffCallBack)
                     R.drawable.dog_list_item_null_backgroung
                 )
                 binding.dogListItemLayout.setOnLongClickListener() {
-                    onLongItemClickListener?.invoke(dog)
                     true
                 }
             }

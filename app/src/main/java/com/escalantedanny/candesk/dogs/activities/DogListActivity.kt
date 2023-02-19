@@ -13,6 +13,7 @@ import com.escalantedanny.candesk.dogs.adapters.DogAdapter
 import com.escalantedanny.candesk.dogs.api.ApiResponseStatus
 import com.escalantedanny.candesk.databinding.ActivityDogListBinding
 import com.escalantedanny.candesk.dogs.activities.DogDetailActivity.Companion.DOG_KEY
+import com.escalantedanny.candesk.dogs.activities.DogDetailActivity.Companion.IS_RECOGNITION_KEY
 import com.escalantedanny.candesk.dogs.viewmodels.DogViewModel
 import com.escalantedanny.candesk.utils.Constants.SPAN_COUNT
 
@@ -31,13 +32,9 @@ class DogListActivity : AppCompatActivity() {
         adapter.setOnItemClickListener {
             val intent = Intent(this, DogDetailActivity::class.java)
             intent.putExtra(DOG_KEY, it)
+            intent.putExtra(IS_RECOGNITION_KEY, false)
             startActivity(intent)
         }
-
-        adapter.setOnLongItemClickListener {
-            dogListViewModel.addDogToUser(it.id)
-        }
-
 
         recycler.adapter = adapter
         dogListViewModel.dogList.observe(this){
@@ -57,8 +54,6 @@ class DogListActivity : AppCompatActivity() {
             }
 
         }
-
-
 
     }
 
