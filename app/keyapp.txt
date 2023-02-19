@@ -1,0 +1,4 @@
+Pass y pass store
+AppComercio1234
+alias
+AppComercio
